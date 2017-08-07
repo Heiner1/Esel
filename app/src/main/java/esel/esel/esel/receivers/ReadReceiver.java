@@ -1,4 +1,4 @@
-package esel.esel.esel.util;
+package esel.esel.esel.receivers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -13,6 +13,9 @@ import java.io.IOException;
 import esel.esel.esel.Esel;
 import esel.esel.esel.datareader.Datareader;
 import esel.esel.esel.datareader.SGV;
+import esel.esel.esel.util.LocalBroadcaster;
+import esel.esel.esel.util.SP;
+import esel.esel.esel.util.ToastUtils;
 
 /**
  * Created by adrian on 04/08/17.
@@ -40,6 +43,11 @@ private static final String TAG = "ReadReceiver";
             //TODO: KeepAlive und ReadReceiver bei App-Beenden stoppen.
 
             String datastring = Datareader.readData();
+            if(datastring == null){
+                ToastUtils.makeToast("DB not readable!");
+                wl.release();
+                return;
+            }
             SGV sgv = Datareader.generateSGV(datastring);
 
             long oldTime = SP.getLong("lastReadingTime", -1L);
